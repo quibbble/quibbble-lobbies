@@ -20,9 +20,9 @@ func NewLobbies(authenticate func(http.Handler) http.Handler) *Lobbies {
 		lobbies: make(map[string]*Lobby),
 	}
 	go l.clean()
-	l.mux.Handle("/lobby/create", authenticate(http.HandlerFunc(l.createHandler)))
-	l.mux.Handle("/lobby/connect", authenticate(http.HandlerFunc(l.connectHandler)))
-	l.mux.HandleFunc("/health", healthHandler)
+	l.mux.Handle("POST /lobby", authenticate(http.HandlerFunc(l.createHandler)))
+	l.mux.Handle("GET /lobby", authenticate(http.HandlerFunc(l.connectHandler)))
+	l.mux.HandleFunc("GET /health", healthHandler)
 	return l
 }
 
