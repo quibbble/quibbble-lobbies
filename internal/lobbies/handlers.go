@@ -81,8 +81,8 @@ func (l *Lobbies) connectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	key := r.URL.Query().Get("key")
-	id := r.URL.Query().Get("id")
+	key := r.PathValue("key")
+	id := r.PathValue("id")
 	lobby, ok := l.lobbies[fmt.Sprintf("%s_%s", key, id)]
 	if !ok {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

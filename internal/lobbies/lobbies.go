@@ -21,7 +21,7 @@ func NewLobbies(authenticate func(http.Handler) http.Handler) *Lobbies {
 	}
 	go l.clean()
 	l.mux.Handle("POST /lobby", authenticate(http.HandlerFunc(l.createHandler)))
-	l.mux.Handle("GET /lobby", authenticate(http.HandlerFunc(l.connectHandler)))
+	l.mux.Handle("GET /lobby/{key}/{id}", authenticate(http.HandlerFunc(l.connectHandler)))
 	l.mux.HandleFunc("GET /health", healthHandler)
 	return l
 }
