@@ -5,6 +5,7 @@ import (
 	"log"
 	"runtime/debug"
 	"slices"
+	"time"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -36,10 +37,13 @@ type Lobby struct {
 
 	// clean function used to cleanup the lobby.
 	clean func()
+
+	// createdAt is when the lobby was created
+	createdAt time.Time
 }
 
 func NewLobby(key, id string, teams []string, clean func()) *Lobby {
-	return &Lobby{
+	l := &Lobby{
 		connected: make(map[*Connection]struct{}),
 		joinCh:    make(chan *Connection),
 		leaveCh:   make(chan *Connection),
@@ -48,8 +52,15 @@ func NewLobby(key, id string, teams []string, clean func()) *Lobby {
 		teams:     teams,
 		key:       key,
 		id:        id,
-		clean:     clean,
+		createdAt: time.Now(),
 	}
+	l.clean = func() {
+		for connected := range l.connected {
+			connected.Close()
+		}
+		clean()
+	}
+	return l
 }
 
 func (l *Lobby) Start() {

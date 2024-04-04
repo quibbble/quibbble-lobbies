@@ -3,6 +3,7 @@ package lobbies
 import (
 	"net/http"
 	"sync"
+	"time"
 )
 
 type Lobbies struct {
@@ -15,11 +16,22 @@ type Lobbies struct {
 }
 
 func NewLobbies(authenticate func(http.Handler) http.Handler) *Lobbies {
-	gs := &Lobbies{
+	l := &Lobbies{
 		lobbies: make(map[string]*Lobby),
 	}
-	gs.mux.Handle("/lobby/create", authenticate(http.HandlerFunc(gs.createHandler)))
-	gs.mux.Handle("/lobby/connect", authenticate(http.HandlerFunc(gs.connectHandler)))
-	gs.mux.HandleFunc("/health", healthHandler)
-	return gs
+	go l.clean()
+	l.mux.Handle("/lobby/create", authenticate(http.HandlerFunc(l.createHandler)))
+	l.mux.Handle("/lobby/connect", authenticate(http.HandlerFunc(l.connectHandler)))
+	l.mux.HandleFunc("/health", healthHandler)
+	return l
+}
+
+func (l *Lobbies) clean() {
+	for range time.Tick(time.Minute * 30) {
+		for _, lobby := range l.lobbies {
+			if lobby.createdAt.Add(time.Minute * 15).After(time.Now()) {
+				lobby.clean()
+			}
+		}
+	}
 }
