@@ -114,7 +114,7 @@ func (l *Lobby) Start() {
 					l.sendErrorMessage(msg.Connection, fmt.Errorf("not enough players have joined"))
 					continue
 				}
-				url := "http://quibbble-controller.quibbble/create"
+				url := "http://quibbble-controller.quibbble/game"
 				if err := CreateGame(url, l.key, l.id, l.teams, l.players); err != nil {
 					l.sendErrorMessage(msg.Connection, err)
 					continue
