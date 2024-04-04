@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "quibbble-lobbies.fullname" . }}
+  labels:
+    {{- include "quibbble-lobbies.labels" . | nindent 4 }}
+  annotations:
+    "nginx.ingress.kubernetes.io/enable-cors": "true"
+    "nginx.ingress.kubernetes.io/cors-allow-methods": "GET, POST, HEAD, OPTIONS"
+    "nginx.ingress.kubernetes.io/cors-allow-credentials": "true"
+    "nginx.ingress.kubernetes.io/cors-allow-origin": {{ join "," .Values.allowOrigins | quote }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /lobby
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "quibbble-lobbies.fullname" . }}
+                port:
+                  number: {{ .Values.ingress.port }}
