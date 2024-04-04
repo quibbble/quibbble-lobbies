@@ -49,6 +49,7 @@ func NewLobby(key, id string, teams []string, clean func()) *Lobby {
 		leaveCh:   make(chan *Connection),
 		inputCh:   make(chan *Action),
 		players:   make(map[string][]string),
+		saved:     make(map[string]*string),
 		teams:     teams,
 		key:       key,
 		id:        id,
