@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  quibbble-lobbies:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2024-04-04T17:15:08.821841275Z"
+    description: quibbble lobbies
+    digest: 4316ab7fa2884710bc203c07c4a2dcfe0b8637e8dfc1c0423cd4c052084d371c
+    name: quibbble-lobbies
+    type: application
+    urls:
+    - https://github.com/quibbble/quibbble-lobbies/releases/download/helm-chart-0.1.1/quibbble-lobbies-0.1.1.tgz
+    version: 0.1.1
+generated: "2024-04-04T17:15:08.821848548Z"
