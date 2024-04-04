@@ -56,7 +56,7 @@ func NewLobby(key, id string, teams []string, clean func()) *Lobby {
 	}
 	l.clean = func() {
 		for connected := range l.connected {
-			connected.Close()
+			go connected.Close()
 		}
 		clean()
 	}
@@ -79,11 +79,10 @@ func (l *Lobby) Start() {
 			}
 			l.broadcastConnectionMessage()
 		case p := <-l.leaveCh:
+			team := l.leaveTeam(p.player.UserID)
+			l.saved[p.player.UserID] = team
 			delete(l.connected, p)
 			go p.Close()
-			team := l.team(p.player.UserID)
-			l.saved[p.player.UserID] = team
-			l.leaveTeam(p.player.UserID)
 			l.broadcastConnectionMessage()
 		case msg := <-l.inputCh:
 			switch msg.Type {
@@ -138,11 +137,12 @@ func (l *Lobby) team(uid string) *string {
 	return team
 }
 
-func (l *Lobby) leaveTeam(uid string) {
+func (l *Lobby) leaveTeam(uid string) *string {
 	team := l.team(uid)
 	if team != nil {
 		l.players[*team] = slices.DeleteFunc(l.players[*team], func(it string) bool { return it == uid })
 	}
+	return team
 }
 
 func (l *Lobby) joinTeam(uid, team string) {
