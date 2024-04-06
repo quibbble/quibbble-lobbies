@@ -16,6 +16,7 @@ func CreateGame(url, key, id string, teams []string, players map[string][]string
 		Tags: map[string]string{
 			qgn.KeyTag:   key,
 			qgn.IDTag:    id,
+			qgn.TypeTag:  qgn.MultiplayerType,
 			qgn.TeamsTag: strings.Join(teams, ", "),
 		},
 	}
