@@ -27,9 +27,9 @@ func NewLobbies(authenticate func(http.Handler) http.Handler) *Lobbies {
 }
 
 func (l *Lobbies) clean() {
-	for range time.Tick(time.Minute * 30) {
+	for range time.Tick(time.Minute * 5) {
 		for _, lobby := range l.lobbies {
-			if lobby.createdAt.Add(time.Minute * 15).After(time.Now()) {
+			if time.Now().After(lobby.createdAt.Add(time.Minute * 15)) {
 				lobby.clean()
 			}
 		}
