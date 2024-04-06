@@ -58,7 +58,7 @@ func (l *Lobbies) createHandler(w http.ResponseWriter, r *http.Request) {
 	clean := func() {
 		l.mu.Lock()
 		defer l.mu.Unlock()
-		delete(l.lobbies, create.ID)
+		delete(l.lobbies, key)
 	}
 
 	lobby := NewLobby(create.Key, create.ID, colors[:create.Teams], clean)
